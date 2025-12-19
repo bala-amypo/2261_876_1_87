@@ -12,24 +12,24 @@ import java.util.List;
 @Tag(name = "Users")
 public class UserController {
 
-    private final UserService userService;
+    private final UserService service;
 
-    public UserController(UserService userService) {
-        this.userService = userService;
+    public UserController(UserService service) {
+        this.service = service;
     }
 
     @PostMapping("/register")
-    public User registerUser(@RequestBody User user) {
-        return userService.registerUser(user);
+    public User register(@RequestBody User user) {
+        return service.registerUser(user);
     }
 
     @GetMapping("/all")
-    public List<User> getAllUsers() {
-        return userService.getAllUsers();
+    public List<User> getAll() {
+        return service.getAllUsers();
     }
 
     @GetMapping("/{id}")
-    public User getUserById(@PathVariable Long id) {
-        return userService.getUser(id);
+    public User get(@PathVariable Long id) {
+        return service.getUser(id);
     }
 }
