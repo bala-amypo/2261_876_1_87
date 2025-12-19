@@ -1,8 +1,7 @@
 package com.example.demo.controller;
 
 import com.example.demo.entity.EmissionFactor;
-import com.example.demo.repository.EmissionFactorRepository;
-import com.example.demo.repository.ActivityTypeRepository;
+import com.example.demo.service.EmissionFactorService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,39 +12,30 @@ import java.util.List;
 @Tag(name = "Emission Factors")
 public class EmissionFactorController {
 
-    private final EmissionFactorRepository factorRepository;
-    private final ActivityTypeRepository typeRepository;
+    private final EmissionFactorService service;
 
-    public EmissionFactorController(EmissionFactorRepository factorRepository,
-                                    ActivityTypeRepository typeRepository) {
-        this.factorRepository = factorRepository;
-        this.typeRepository = typeRepository;
+    public EmissionFactorController(EmissionFactorService service) {
+        this.service = service;
     }
 
     @PostMapping("/{activityTypeId}")
-    public EmissionFactor createFactor(@PathVariable Long activityTypeId,
-                                       @RequestBody EmissionFactor factor) {
-        factor.setActivityType(
-                typeRepository.findById(activityTypeId)
-                        .orElseThrow(() -> new RuntimeException("Activity type not found"))
-        );
-        return factorRepository.save(factor);
+    public EmissionFactor create(@PathVariable Long activityTypeId,
+                                 @RequestBody EmissionFactor factor) {
+        return service.createFactor(activityTypeId, factor);
     }
 
     @GetMapping("/{id}")
-    public EmissionFactor getFactor(@PathVariable Long id) {
-        return factorRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Factor not found"));
+    public EmissionFactor get(@PathVariable Long id) {
+        return service.getFactor(id);
     }
 
     @GetMapping("/type/{activityTypeId}")
-    public EmissionFactor getFactorByType(@PathVariable Long activityTypeId) {
-        return factorRepository.findByActivityTypeId(activityTypeId)
-                .orElseThrow(() -> new RuntimeException("Factor not found"));
+    public EmissionFactor getByType(@PathVariable Long activityTypeId) {
+        return service.getFactorByType(activityTypeId);
     }
 
     @GetMapping
-    public List<EmissionFactor> getAllFactors() {
-        return factorRepository.findAll();
+    public List<EmissionFactor> getAll() {
+        return service.getAllFactors();
     }
 }

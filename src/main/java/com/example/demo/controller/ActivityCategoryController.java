@@ -12,24 +12,24 @@ import java.util.List;
 @Tag(name = "Activity Categories")
 public class ActivityCategoryController {
 
-    private final ActivityCategoryService categoryService;
+    private final ActivityCategoryService service;
 
-    public ActivityCategoryController(ActivityCategoryService categoryService) {
-        this.categoryService = categoryService;
+    public ActivityCategoryController(ActivityCategoryService service) {
+        this.service = service;
     }
 
     @PostMapping
-    public ActivityCategory createCategory(@RequestBody ActivityCategory category) {
-        return categoryService.createCategory(category);
+    public ActivityCategory create(@RequestBody ActivityCategory category) {
+        return service.createCategory(category);
     }
 
     @GetMapping
-    public List<ActivityCategory> getAllCategories() {
-        return categoryService.getAllCategories();
+    public List<ActivityCategory> getAll() {
+        return service.getAllCategories();
     }
 
     @GetMapping("/{id}")
-    public ActivityCategory getCategory(@PathVariable Long id) {
-        return categoryService.getCategory(id);
+    public ActivityCategory get(@PathVariable Long id) {
+        return service.getCategory(id);
     }
 }
