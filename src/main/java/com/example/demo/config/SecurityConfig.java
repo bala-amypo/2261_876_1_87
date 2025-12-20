@@ -25,20 +25,20 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
         http
-            // ❌ Disable default login page
+            // ❌ disable default login page
             .formLogin(form -> form.disable())
             .httpBasic(basic -> basic.disable())
 
-            // ❌ Disable CSRF for APIs
+            // ❌ disable CSRF
             .csrf(csrf -> csrf.disable())
 
-            // ✅ Stateless JWT
+            // ✅ stateless JWT
             .sessionManagement(session ->
                     session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 
-            // ✅ URL security rules
+            // ✅ URL authorization
             .authorizeHttpRequests(auth -> auth
-                // 🔓 PUBLIC ENDPOINTS
+                // 🔓 swagger + auth endpoints
                 .requestMatchers(
                         "/auth/**",
                         "/swagger-ui/**",
@@ -46,13 +46,13 @@ public class SecurityConfig {
                         "/v3/api-docs/**"
                 ).permitAll()
 
-                // 🔐 PROTECTED ENDPOINTS
+                // 🔐 secure APIs
                 .requestMatchers("/api/**").authenticated()
 
                 .anyRequest().authenticated()
             )
 
-            // ✅ JWT filter
+            // ✅ add JWT filter
             .addFilterBefore(jwtAuthenticationFilter,
                     UsernamePasswordAuthenticationFilter.class);
 
@@ -70,3 +70,4 @@ public class SecurityConfig {
         return config.getAuthenticationManager();
     }
 }
+ 
