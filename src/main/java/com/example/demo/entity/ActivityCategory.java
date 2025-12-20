@@ -2,11 +2,10 @@ package com.example.demo.entity;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
-@Table(name = "activity_category", uniqueConstraints = {
-        @UniqueConstraint(columnNames = "categoryName")
-})
+@Table(name = "activity_categories")
 public class ActivityCategory {
 
     @Id
@@ -20,11 +19,14 @@ public class ActivityCategory {
 
     private LocalDateTime createdAt;
 
-    // Default Constructor
+    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL)
+    private List<ActivityType> activityTypes;
+
+    // No-arg constructor
     public ActivityCategory() {
     }
 
-    // Parameterized Constructor
+    // Constructor used in TESTS
     public ActivityCategory(Long id, String categoryName, String description, LocalDateTime createdAt) {
         this.id = id;
         this.categoryName = categoryName;
@@ -33,11 +35,12 @@ public class ActivityCategory {
     }
 
     @PrePersist
-    public void prePersist() {
+    public void onCreate() {
         this.createdAt = LocalDateTime.now();
     }
 
     // Getters and Setters
+
     public Long getId() {
         return id;
     }
@@ -66,7 +69,7 @@ public class ActivityCategory {
         return createdAt;
     }
 
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
+    public List<ActivityType> getActivityTypes() {
+        return activityTypes;
     }
 }

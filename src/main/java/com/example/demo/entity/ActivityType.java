@@ -4,16 +4,14 @@ import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "activity_type", uniqueConstraints = {
-        @UniqueConstraint(columnNames = "typeName")
-})
+@Table(name = "activity_types")
 public class ActivityType {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private String typeName;
 
     @ManyToOne
@@ -25,11 +23,11 @@ public class ActivityType {
 
     private LocalDateTime createdAt;
 
-    // Default Constructor
+    // No-arg constructor
     public ActivityType() {
     }
 
-    // Parameterized Constructor
+    // Constructor used in TESTS
     public ActivityType(Long id, String typeName, ActivityCategory category, String unit, LocalDateTime createdAt) {
         this.id = id;
         this.typeName = typeName;
@@ -39,11 +37,12 @@ public class ActivityType {
     }
 
     @PrePersist
-    public void prePersist() {
+    public void onCreate() {
         this.createdAt = LocalDateTime.now();
     }
 
     // Getters and Setters
+
     public Long getId() {
         return id;
     }
@@ -78,9 +77,5 @@ public class ActivityType {
 
     public LocalDateTime getCreatedAt() {
         return createdAt;
-    }
-
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
     }
 }
