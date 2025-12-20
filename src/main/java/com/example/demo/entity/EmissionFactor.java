@@ -4,35 +4,30 @@ import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "emission_factor", uniqueConstraints = {
-        @UniqueConstraint(columnNames = "activity_type_id")
-})
+@Table(name = "emission_factors")
 public class EmissionFactor {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "activity_type_id", nullable = false)
     private ActivityType activityType;
 
     @Column(nullable = false)
     private Double factorValue;
 
-    @Column(nullable = false)
     private String unit;
 
     private LocalDateTime createdAt;
 
-    // Default Constructor
+    // No-arg constructor
     public EmissionFactor() {
     }
 
-    // Parameterized Constructor
-    public EmissionFactor(Long id, ActivityType activityType,
-                          Double factorValue, String unit,
-                          LocalDateTime createdAt) {
+    // Constructor used in TESTS
+    public EmissionFactor(Long id, ActivityType activityType, Double factorValue, String unit, LocalDateTime createdAt) {
         this.id = id;
         this.activityType = activityType;
         this.factorValue = factorValue;
@@ -41,17 +36,14 @@ public class EmissionFactor {
     }
 
     @PrePersist
-    public void prePersist() {
+    public void onCreate() {
         this.createdAt = LocalDateTime.now();
     }
 
     // Getters and Setters
+
     public Long getId() {
         return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public ActivityType getActivityType() {
@@ -80,9 +72,5 @@ public class EmissionFactor {
 
     public LocalDateTime getCreatedAt() {
         return createdAt;
-    }
-
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
     }
 }
