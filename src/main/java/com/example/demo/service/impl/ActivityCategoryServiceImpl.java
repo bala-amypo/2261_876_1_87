@@ -1,26 +1,28 @@
-package com.example.demo.service;
+package com.example.demo.service.impl;
 
 import com.example.demo.entity.ActivityCategory;
 import com.example.demo.repository.ActivityCategoryRepository;
+import com.example.demo.service.ActivityCategoryService;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
 
-@Service   // <-- THIS IS THE CRUCIAL ANNOTATION
+@Service
 public class ActivityCategoryServiceImpl implements ActivityCategoryService {
 
-    private final ActivityCategoryRepository repository;
+    private final ActivityCategoryRepository activityCategoryRepository;
 
-    public ActivityCategoryServiceImpl(ActivityCategoryRepository repository) {
-        this.repository = repository;
+    public ActivityCategoryServiceImpl(ActivityCategoryRepository activityCategoryRepository) {
+        this.activityCategoryRepository = activityCategoryRepository;
     }
 
     @Override
     public ActivityCategory createCategory(ActivityCategory category) {
-        return repository.save(category);
+        return activityCategoryRepository.save(category);
     }
 
     @Override
     public List<ActivityCategory> getAllCategories() {
-        return repository.findAll();
+        return activityCategoryRepository.findAll();
     }
 }
