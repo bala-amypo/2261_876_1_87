@@ -4,6 +4,12 @@ import com.example.demo.entity.EmissionFactor;
 import java.util.List;
 
 public interface EmissionFactorService {
-    EmissionFactor createEmissionFactor(EmissionFactor factor);
-    List<EmissionFactor> getAllEmissionFactors();
+
+    EmissionFactor createFactor(Long activityTypeId, EmissionFactor factor);
+
+    EmissionFactor getFactor(Long id);
+
+    EmissionFactor getFactorByType(Long activityTypeId);
+
+    List<EmissionFactor> getAllFactors();
 }
