@@ -3,6 +3,8 @@ package com.example.demo.controller;
 import com.example.demo.dto.ActivityLogRequest;
 import com.example.demo.entity.ActivityLog;
 import com.example.demo.service.ActivityLogService;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -19,28 +21,29 @@ public class ActivityLogController {
     }
 
     @PostMapping("/{userId}/{typeId}")
-    public ActivityLog logActivity(@PathVariable Long userId,
-                                   @PathVariable Long typeId,
-                                   @RequestBody ActivityLogRequest request) {
-
+    public ResponseEntity<ActivityLog> logActivity(@PathVariable Long userId,
+                                                   @PathVariable Long typeId,
+                                                   @RequestBody ActivityLogRequest request) {
         ActivityLog log = new ActivityLog();
         log.setQuantity(request.getQuantity());
         log.setActivityDate(request.getActivityDate());
 
-        return logService.logActivity(userId, typeId, log);
+        ActivityLog savedLog = logService.logActivity(userId, typeId, log);
+        return ResponseEntity.ok(savedLog);
     }
 
     @GetMapping("/user/{userId}")
-    public List<ActivityLog> getLogsByUser(@PathVariable Long userId) {
-        return logService.getLogsByUser(userId);
+    public ResponseEntity<List<ActivityLog>> getLogsByUser(@PathVariable Long userId) {
+        List<ActivityLog> logs = logService.getLogsByUser(userId);
+        return ResponseEntity.ok(logs);
     }
 
     @GetMapping("/user/{userId}/range")
-    public List<ActivityLog> getLogsByUserAndDate(
+    public ResponseEntity<List<ActivityLog>> getLogsByUserAndDate(
             @PathVariable Long userId,
-            @RequestParam LocalDate start,
-            @RequestParam LocalDate end) {
-
-        return logService.getLogsByUserAndDate(userId, start, end);
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate start,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate end) {
+        List<ActivityLog> logs = logService.getLogsByUserAndDate(userId, start, end);
+        return ResponseEntity.ok(logs);
     }
 }
