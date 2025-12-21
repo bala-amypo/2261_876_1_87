@@ -22,12 +22,11 @@ public class User {
 
     private LocalDateTime createdAt;
 
-    // No-arg constructor (REQUIRED)
     public User() {
     }
 
-    // Constructor used in TESTS
-    public User(Long id, String fullName, String email, String password, String role, LocalDateTime createdAt) {
+    public User(Long id, String fullName, String email,
+                String password, String role, LocalDateTime createdAt) {
         this.id = id;
         this.fullName = fullName;
         this.email = email;
@@ -37,11 +36,11 @@ public class User {
     }
 
     @PrePersist
-    public void onCreate() {
+    public void prePersist() {
         this.createdAt = LocalDateTime.now();
     }
 
-    // Getters and Setters
+    /* ===== Getters & Setters ===== */
 
     public Long getId() {
         return id;
@@ -70,19 +69,19 @@ public class User {
     public String getPassword() {
         return password;
     }
-
+ 
     public void setPassword(String password) {
         this.password = password;
     }
-
+ 
     public String getRole() {
         return role;
     }
-
+ 
     public void setRole(String role) {
         this.role = role;
     }
-
+ 
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }
