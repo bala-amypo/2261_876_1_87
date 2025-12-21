@@ -4,6 +4,10 @@ import com.example.demo.entity.ActivityType;
 import java.util.List;
 
 public interface ActivityTypeService {
-    ActivityType createActivityType(ActivityType type);
-    List<ActivityType> getAllActivityTypes();
+
+    ActivityType createType(Long categoryId, ActivityType type);
+
+    ActivityType getType(Long id);
+
+    List<ActivityType> getTypesByCategory(Long categoryId);
 }

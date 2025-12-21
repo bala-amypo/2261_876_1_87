@@ -1,6 +1,8 @@
 package com.example.demo.service.impl;
 
+import com.example.demo.entity.ActivityCategory;
 import com.example.demo.entity.ActivityType;
+import com.example.demo.repository.ActivityCategoryRepository;
 import com.example.demo.repository.ActivityTypeRepository;
 import com.example.demo.service.ActivityTypeService;
 import org.springframework.stereotype.Service;
@@ -10,19 +12,33 @@ import java.util.List;
 @Service
 public class ActivityTypeServiceImpl implements ActivityTypeService {
 
-    private final ActivityTypeRepository activityTypeRepository;
+    private final ActivityTypeRepository typeRepository;
+    private final ActivityCategoryRepository categoryRepository;
 
-    public ActivityTypeServiceImpl(ActivityTypeRepository activityTypeRepository) {
-        this.activityTypeRepository = activityTypeRepository;
+    public ActivityTypeServiceImpl(
+            ActivityTypeRepository typeRepository,
+            ActivityCategoryRepository categoryRepository
+    ) {
+        this.typeRepository = typeRepository;
+        this.categoryRepository = categoryRepository;
     }
 
     @Override
-    public ActivityType createActivityType(ActivityType type) {
-        return activityTypeRepository.save(type);
+    public ActivityType createType(Long categoryId, ActivityType type) {
+        ActivityCategory category =
+                categoryRepository.findById(categoryId).orElseThrow();
+
+        type.setCategory(category);
+        return typeRepository.save(type);
     }
 
     @Override
-    public List<ActivityType> getAllActivityTypes() {
-        return activityTypeRepository.findAll();
+    public ActivityType getType(Long id) {
+        return typeRepository.findById(id).orElseThrow();
+    }
+
+    @Override
+    public List<ActivityType> getTypesByCategory(Long categoryId) {
+        return typeRepository.findByCategoryId(categoryId);
     }
 }
