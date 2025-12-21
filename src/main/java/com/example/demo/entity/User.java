@@ -1,11 +1,18 @@
 package com.example.demo.entity;
 
 import jakarta.persistence.*;
+import lombok.*;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
 @Table(name = "users")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class User {
 
     @Id
@@ -14,19 +21,23 @@ public class User {
 
     private String fullName;
 
-    @Column(unique = true)
+    @Column(unique = true, nullable = false)
     private String email;
 
+    @Column(nullable = false)
     private String password;
 
-    private String role; // "USER" or "ADMIN"
+    private String role = "USER";
 
     private LocalDateTime createdAt;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "user")
     private List<ActivityLog> activityLogs;
 
-    public User() {}
+    @PrePersist
+    public void prePersist() {
+        this.createdAt = LocalDateTime.now();
+    }
 
     public User(Long id, String fullName, String email, String password, String role, LocalDateTime createdAt) {
         this.id = id;
@@ -36,12 +47,4 @@ public class User {
         this.role = role;
         this.createdAt = createdAt;
     }
-
-    @PrePersist
-    protected void onCreate() {
-        this.createdAt = LocalDateTime.now();
-    }
-
-    // Getters and setters
-    // ...
 }
