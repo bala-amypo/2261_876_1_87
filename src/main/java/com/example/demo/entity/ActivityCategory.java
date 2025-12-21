@@ -2,6 +2,7 @@ package com.example.demo.entity;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name = "activity_categories")
@@ -11,18 +12,19 @@ public class ActivityCategory {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(unique = true, nullable = false)
+    @Column(unique = true)
     private String categoryName;
 
     private String description;
 
     private LocalDateTime createdAt;
 
-    public ActivityCategory() {
-    }
+    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL)
+    private List<ActivityType> activityTypes;
 
-    public ActivityCategory(Long id, String categoryName,
-                            String description, LocalDateTime createdAt) {
+    public ActivityCategory() {}
+
+    public ActivityCategory(Long id, String categoryName, String description, LocalDateTime createdAt) {
         this.id = id;
         this.categoryName = categoryName;
         this.description = description;
@@ -30,37 +32,10 @@ public class ActivityCategory {
     }
 
     @PrePersist
-    public void prePersist() {
+    protected void onCreate() {
         this.createdAt = LocalDateTime.now();
     }
 
-    /* ===== Getters & Setters ===== */
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getCategoryName() {
-        return categoryName;
-    }
- 
-    public void setCategoryName(String categoryName) {
-        this.categoryName = categoryName;
-    }
- 
-    public String getDescription() {
-        return description;
-    }
- 
-    public void setDescription(String description) {
-        this.description = description;
-    }
- 
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
+    // Getters and setters
+    // ...
 }

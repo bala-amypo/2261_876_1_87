@@ -2,6 +2,7 @@ package com.example.demo.entity;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name = "users")
@@ -13,20 +14,21 @@ public class User {
 
     private String fullName;
 
-    @Column(unique = true, nullable = false)
+    @Column(unique = true)
     private String email;
 
     private String password;
 
-    private String role;
+    private String role; // "USER" or "ADMIN"
 
     private LocalDateTime createdAt;
 
-    public User() {
-    }
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<ActivityLog> activityLogs;
 
-    public User(Long id, String fullName, String email,
-                String password, String role, LocalDateTime createdAt) {
+    public User() {}
+
+    public User(Long id, String fullName, String email, String password, String role, LocalDateTime createdAt) {
         this.id = id;
         this.fullName = fullName;
         this.email = email;
@@ -36,53 +38,10 @@ public class User {
     }
 
     @PrePersist
-    public void prePersist() {
+    protected void onCreate() {
         this.createdAt = LocalDateTime.now();
     }
 
-    /* ===== Getters & Setters ===== */
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getFullName() {
-        return fullName;
-    }
-
-    public void setFullName(String fullName) {
-        this.fullName = fullName;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getPassword() {
-        return password;
-    }
- 
-    public void setPassword(String password) {
-        this.password = password;
-    }
- 
-    public String getRole() {
-        return role;
-    }
- 
-    public void setRole(String role) {
-        this.role = role;
-    }
- 
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
+    // Getters and setters
+    // ...
 }
