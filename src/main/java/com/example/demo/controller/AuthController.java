@@ -5,12 +5,11 @@ import com.example.demo.dto.RegisterRequest;
 import com.example.demo.entity.User;
 import com.example.demo.security.JwtUtil;
 import com.example.demo.service.UserService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Map;
 
 @RestController
 @RequestMapping("/auth")
@@ -29,29 +28,28 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public User register(@RequestBody RegisterRequest request) {
-
+    public ResponseEntity<User> register(@RequestBody RegisterRequest request) {
         User user = new User();
         user.setFullName(request.getName());
         user.setEmail(request.getEmail());
         user.setPassword(request.getPassword());
-
-        return userService.registerUser(user);
+        User savedUser = userService.registerUser(user);
+        return ResponseEntity.ok(savedUser);
     }
 
     @PostMapping("/login")
-    public Map<String, String> login(@RequestBody LoginRequest request) {
+    public ResponseEntity<String> login(@RequestBody LoginRequest request) {
+        try {
+            authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword())
+            );
 
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        request.getEmail(),
-                        request.getPassword()
-                )
-        );
+            User user = userService.getByEmail(request.getEmail());
+            String token = jwtUtil.generateTokenForUser(user);
 
-        User user = userService.getByEmail(request.getEmail());
-        String token = jwtUtil.generateTokenForUser(user);
-
-        return Map.of("token", token);
+            return ResponseEntity.ok(token);
+        } catch (AuthenticationException ex) {
+            return ResponseEntity.status(401).body("Invalid credentials");
+        }
     }
 }

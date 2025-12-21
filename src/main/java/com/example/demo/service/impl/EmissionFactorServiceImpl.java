@@ -2,14 +2,14 @@ package com.example.demo.service.impl;
 
 import com.example.demo.entity.ActivityType;
 import com.example.demo.entity.EmissionFactor;
+import com.example.demo.exception.ResourceNotFoundException;
+import com.example.demo.exception.ValidationException;
 import com.example.demo.repository.ActivityTypeRepository;
 import com.example.demo.repository.EmissionFactorRepository;
 import com.example.demo.service.EmissionFactorService;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@Service
 public class EmissionFactorServiceImpl implements EmissionFactorService {
 
     private final EmissionFactorRepository factorRepository;
@@ -23,13 +23,12 @@ public class EmissionFactorServiceImpl implements EmissionFactorService {
 
     @Override
     public EmissionFactor createFactor(Long activityTypeId, EmissionFactor factor) {
-
-        if (factorRepository.existsByActivityTypeId(activityTypeId)) {
-            throw new RuntimeException("Emission factor already exists for this activity type");
+        if (factor.getFactorValue() == null || factor.getFactorValue() <= 0) {
+            throw new ValidationException("Factor value must be greater than zero");
         }
 
         ActivityType type = typeRepository.findById(activityTypeId)
-                .orElseThrow(() -> new RuntimeException("Activity type not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Category not found"));
 
         factor.setActivityType(type);
 
@@ -39,13 +38,13 @@ public class EmissionFactorServiceImpl implements EmissionFactorService {
     @Override
     public EmissionFactor getFactor(Long id) {
         return factorRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Emission factor not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Emission factor not found"));
     }
 
     @Override
     public EmissionFactor getFactorByType(Long typeId) {
-        return factorRepository.findByActivityTypeId(typeId)
-                .orElseThrow(() -> new RuntimeException("Emission factor not found"));
+        return factorRepository.findByActivityType_Id(typeId)
+                .orElseThrow(() -> new ResourceNotFoundException("Emission factor not found"));
     }
 
     @Override
