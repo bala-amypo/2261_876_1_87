@@ -1,6 +1,7 @@
 package com.example.demo.config;
 
 import com.example.demo.security.JwtAuthenticationFilter;
+import com.example.demo.security.CustomUserDetailsService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -16,45 +17,35 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final CustomUserDetailsService customUserDetailsService;
 
-    public SecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter) {
+    public SecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter,
+                          CustomUserDetailsService customUserDetailsService) {
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
+        this.customUserDetailsService = customUserDetailsService;
     }
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
         http
-            // ❌ disable default login page
-            .formLogin(form -> form.disable())
-            .httpBasic(basic -> basic.disable())
-
-            // ❌ disable CSRF
             .csrf(csrf -> csrf.disable())
-
-            // ✅ stateless JWT
             .sessionManagement(session ->
-                    session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-
-            // ✅ URL authorization
+                    session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+            )
             .authorizeHttpRequests(auth -> auth
-                // 🔓 swagger + auth endpoints
                 .requestMatchers(
-                        "/auth/**",
+                        "/auth/register",
+                        "/auth/login",
                         "/swagger-ui/**",
-                        "/swagger-ui.html",
                         "/v3/api-docs/**"
                 ).permitAll()
-
-                // 🔐 secure APIs
                 .requestMatchers("/api/**").authenticated()
-
-                .anyRequest().authenticated()
+                .anyRequest().permitAll()
             )
+            .userDetailsService(customUserDetailsService);
 
-            // ✅ add JWT filter
-            .addFilterBefore(jwtAuthenticationFilter,
-                    UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
@@ -66,8 +57,7 @@ public class SecurityConfig {
 
     @Bean
     public AuthenticationManager authenticationManager(
-            AuthenticationConfiguration config) throws Exception {
-        return config.getAuthenticationManager();
+            AuthenticationConfiguration configuration) throws Exception {
+        return configuration.getAuthenticationManager();
     }
 }
- 
