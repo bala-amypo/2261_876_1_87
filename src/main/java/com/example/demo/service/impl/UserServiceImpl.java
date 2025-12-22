@@ -1,33 +1,54 @@
-package com.example.demo.service.impl;
+package com.example.demo.service;
 
-import com.example.demo.entity.User;
-import com.example.demo.repository.UserRepository;
-import com.example.demo.service.UserService;
-import org.springframework.stereotype.Service;
+import com.example.demo.entity.ActivityCategory;
+import java.util.List;
 
-@Service
-public class UserServiceImpl implements UserService {
+public interface ActivityCategoryService {
+    ActivityCategory createCategory(ActivityCategory category);
+    List<ActivityCategory> getAllCategories();
+}
+package com.example.demo.service;
 
-    private final UserRepository userRepository;
+import com.example.demo.entity.ActivityCategory;
+import java.util.List;
 
-    public UserServiceImpl(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
+public interface ActivityCategoryService {
+    ActivityCategory createCategory(ActivityCategory category);
+    List<ActivityCategory> getAllCategories();
+}
+package com.example.demo.service;
 
-    @Override
-    public User registerUser(User user) {
-        return userRepository.save(user);
-    }
+import com.example.demo.entity.ActivityCategory;
+import java.util.List;
 
-    @Override
-    public User getByEmail(String email) {
-        return userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("User not found with email: " + email));
-    }
+public interface ActivityCategoryService {
+    ActivityCategory createCategory(ActivityCategory category);
+    List<ActivityCategory> getAllCategories();
+}
+package com.example.demo.service;
 
-    @Override
-    public User getUser(Long id) {
-        return userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
-    }
+import com.example.demo.entity.ActivityCategory;
+import java.util.List;
+
+public interface ActivityCategoryService {
+    ActivityCategory createCategory(ActivityCategory category);
+    List<ActivityCategory> getAllCategories();
+}
+package com.example.demo.service;
+
+import com.example.demo.entity.ActivityCategory;
+import java.util.List;
+
+public interface ActivityCategoryService {
+    ActivityCategory createCategory(ActivityCategory category);
+    List<ActivityCategory> getAllCategories();
+}
+package com.example.demo.service;
+
+import com.example.demo.entity.ActivityCategory;
+import java.util.List;
+
+public interface ActivityCategoryService {
+    ActivityCategory createCategory(ActivityCategory category);
+    List<ActivityCategory> getAllCategories();
 }
