@@ -1,54 +1,57 @@
-package com.example.demo.service;
+package com.example.demo.service.impl;
 
-import com.example.demo.entity.ActivityCategory;
+import com.example.demo.entity.User;
+import com.example.demo.exception.ResourceNotFoundException;
+import com.example.demo.exception.ValidationException;
+import com.example.demo.repository.UserRepository;
+import com.example.demo.service.UserService;
+import org.springframework.security.crypto.password.PasswordEncoder;
+
 import java.util.List;
+import java.util.Optional;
 
-public interface ActivityCategoryService {
-    ActivityCategory createCategory(ActivityCategory category);
-    List<ActivityCategory> getAllCategories();
-}
-package com.example.demo.service;
+public class UserServiceImpl implements UserService {
 
-import com.example.demo.entity.ActivityCategory;
-import java.util.List;
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
-public interface ActivityCategoryService {
-    ActivityCategory createCategory(ActivityCategory category);
-    List<ActivityCategory> getAllCategories();
-}
-package com.example.demo.service;
+    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+        this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
+    }
 
-import com.example.demo.entity.ActivityCategory;
-import java.util.List;
+    @Override
+    public User registerUser(User user) {
+        if (userRepository.existsByEmail(user.getEmail())) {
+            throw new ValidationException("Email already in use");
+        }
+        if (user.getPassword() == null || user.getPassword().length() < 8) {
+            throw new ValidationException("Password must be at least 8 characters");
+        }
 
-public interface ActivityCategoryService {
-    ActivityCategory createCategory(ActivityCategory category);
-    List<ActivityCategory> getAllCategories();
-}
-package com.example.demo.service;
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
 
-import com.example.demo.entity.ActivityCategory;
-import java.util.List;
+        if (user.getRole() == null || user.getRole().isBlank()) {
+            user.setRole("USER");
+        }
 
-public interface ActivityCategoryService {
-    ActivityCategory createCategory(ActivityCategory category);
-    List<ActivityCategory> getAllCategories();
-}
-package com.example.demo.service;
+        return userRepository.save(user);
+    }
 
-import com.example.demo.entity.ActivityCategory;
-import java.util.List;
+    @Override
+    public User getUser(Long id) {
+        return userRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+    }
 
-public interface ActivityCategoryService {
-    ActivityCategory createCategory(ActivityCategory category);
-    List<ActivityCategory> getAllCategories();
-}
-package com.example.demo.service;
+    @Override
+    public List<User> getAllUsers() {
+        return userRepository.findAll();
+    }
 
-import com.example.demo.entity.ActivityCategory;
-import java.util.List;
-
-public interface ActivityCategoryService {
-    ActivityCategory createCategory(ActivityCategory category);
-    List<ActivityCategory> getAllCategories();
+    @Override
+    public User getByEmail(String email) {
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+    }
 }
