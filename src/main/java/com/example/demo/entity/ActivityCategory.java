@@ -10,17 +10,10 @@ public class ActivityCategory {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(unique = true)
     private String categoryName;
-
     private String description;
 
     private LocalDateTime createdAt;
-
-    @PrePersist
-    public void prePersist() {
-        this.createdAt = LocalDateTime.now();
-    }
 
     public ActivityCategory() {}
 
@@ -31,7 +24,13 @@ public class ActivityCategory {
         this.createdAt = createdAt;
     }
 
+    @PrePersist
+    public void prePersist() {
+        this.createdAt = LocalDateTime.now();
+    }
+
     // getters & setters
+
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 

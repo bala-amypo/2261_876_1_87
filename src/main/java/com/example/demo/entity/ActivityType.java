@@ -13,16 +13,11 @@ public class ActivityType {
     private String typeName;
 
     @ManyToOne
+    @JoinColumn(name = "category_id")
     private ActivityCategory category;
 
     private String unit;
-
     private LocalDateTime createdAt;
-
-    @PrePersist
-    public void prePersist() {
-        this.createdAt = LocalDateTime.now();
-    }
 
     public ActivityType() {}
 
@@ -34,7 +29,13 @@ public class ActivityType {
         this.createdAt = createdAt;
     }
 
+    @PrePersist
+    public void prePersist() {
+        this.createdAt = LocalDateTime.now();
+    }
+
     // getters & setters
+
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 

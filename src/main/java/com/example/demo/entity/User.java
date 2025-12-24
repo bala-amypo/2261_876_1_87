@@ -12,20 +12,11 @@ public class User {
     private Long id;
 
     private String name;
-
-    @Column(unique = true, nullable = false)
     private String email;
-
     private String password;
-
     private String role;
 
     private LocalDateTime createdAt;
-
-    @PrePersist
-    public void prePersist() {
-        this.createdAt = LocalDateTime.now();
-    }
 
     public User() {}
 
@@ -38,7 +29,13 @@ public class User {
         this.createdAt = createdAt;
     }
 
+    @PrePersist
+    public void prePersist() {
+        this.createdAt = LocalDateTime.now();
+    }
+
     // getters & setters
+
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
