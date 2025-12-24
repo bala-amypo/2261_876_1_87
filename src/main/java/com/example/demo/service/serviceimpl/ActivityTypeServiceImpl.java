@@ -1,4 +1,4 @@
-package com.example.demo.service.impl;
+package com.example.demo.service.serviceimpl;
 
 import com.example.demo.entity.ActivityCategory;
 import com.example.demo.entity.ActivityType;
@@ -15,30 +15,24 @@ public class ActivityTypeServiceImpl implements ActivityTypeService {
     private final ActivityTypeRepository typeRepository;
     private final ActivityCategoryRepository categoryRepository;
 
-    public ActivityTypeServiceImpl(
-            ActivityTypeRepository typeRepository,
-            ActivityCategoryRepository categoryRepository
-    ) {
+    public ActivityTypeServiceImpl(ActivityTypeRepository typeRepository,
+                                   ActivityCategoryRepository categoryRepository) {
         this.typeRepository = typeRepository;
         this.categoryRepository = categoryRepository;
     }
 
     @Override
-    public ActivityType createType(Long categoryId, ActivityType type) {
-        ActivityCategory category =
-                categoryRepository.findById(categoryId).orElseThrow();
+    public ActivityType createActivityType(ActivityType activityType) {
+        ActivityCategory category = categoryRepository
+                .findById(activityType.getCategory().getId())
+                .orElseThrow(() -> new RuntimeException("Category not found"));
 
-        type.setCategory(category);
-        return typeRepository.save(type);
+        activityType.setCategory(category);
+        return typeRepository.save(activityType);
     }
 
     @Override
-    public ActivityType getType(Long id) {
-        return typeRepository.findById(id).orElseThrow();
-    }
-
-    @Override
-    public List<ActivityType> getTypesByCategory(Long categoryId) {
+    public List<ActivityType> getActivityTypesByCategory(Long categoryId) {
         return typeRepository.findByCategoryId(categoryId);
     }
 }

@@ -1,4 +1,4 @@
-package com.example.demo.service.impl;
+package com.example.demo.service.serviceimpl;
 
 import com.example.demo.entity.User;
 import com.example.demo.repository.UserRepository;
@@ -15,19 +15,16 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User registerUser(User user) {
+    public User register(User user) {
+        if (userRepository.findByEmail(user.getEmail()).isPresent()) {
+            throw new RuntimeException("Email already exists");
+        }
         return userRepository.save(user);
     }
 
     @Override
-    public User getByEmail(String email) {
-        return userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("User not found with email: " + email));
-    }
-
-    @Override
-    public User getUser(Long id) {
-        return userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
+    public User login(String email, String password) {
+        return userRepository.findByEmailAndPassword(email, password)
+                .orElseThrow(() -> new RuntimeException("Invalid credentials"));
     }
 }
