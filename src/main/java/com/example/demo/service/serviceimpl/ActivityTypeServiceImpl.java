@@ -1,21 +1,15 @@
-package com.example.demo.service.serviceimpl;
+package com.example.demo.service.impl;
 
-import com.example.demo.entity.ActivityType;
+import com.example.demo.repository.ActivityCategoryRepository;
 import com.example.demo.repository.ActivityTypeRepository;
 import com.example.demo.service.ActivityTypeService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
-import java.util.List;
-
-@Service
 public class ActivityTypeServiceImpl implements ActivityTypeService {
+    private final ActivityCategoryRepository categoryRepository;
+    private final ActivityTypeRepository typeRepository;
 
-    @Autowired
-    private ActivityTypeRepository activityTypeRepository;
-
-    @Override
-    public List<ActivityType> getAllActivityTypes() {
-        return activityTypeRepository.findAll();
+    public ActivityTypeServiceImpl(ActivityCategoryRepository categoryRepository, ActivityTypeRepository typeRepository) {
+        this.categoryRepository = categoryRepository;
+        this.typeRepository = typeRepository;
     }
 }

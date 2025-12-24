@@ -1,31 +1,23 @@
-package com.example.demo.service.serviceimpl;
+package com.example.demo.service.impl;
 
 import com.example.demo.entity.EmissionFactor;
+import com.example.demo.exception.ResourceNotFoundException;
+import com.example.demo.repository.ActivityTypeRepository;
 import com.example.demo.repository.EmissionFactorRepository;
 import com.example.demo.service.EmissionFactorService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
-import java.util.List;
-
-@Service
 public class EmissionFactorServiceImpl implements EmissionFactorService {
+    private final ActivityTypeRepository typeRepository;
+    private final EmissionFactorRepository factorRepository;
 
-    @Autowired
-    private EmissionFactorRepository emissionFactorRepository;
-
-    @Override
-    public EmissionFactor createFactor(EmissionFactor factor) {
-        return emissionFactorRepository.save(factor);
+    public EmissionFactorServiceImpl(ActivityTypeRepository typeRepository, EmissionFactorRepository factorRepository) {
+        this.typeRepository = typeRepository;
+        this.factorRepository = factorRepository;
     }
 
     @Override
-    public List<EmissionFactor> getAllFactors() {
-        return emissionFactorRepository.findAll();
-    }
-
-    @Override
-    public EmissionFactor getFactorByType(Long typeId) {
-        return emissionFactorRepository.findByActivityTypeId(typeId);
+    public EmissionFactor getFactorByType(Long activityTypeId) {
+        return factorRepository.findByActivityType_Id(activityTypeId)
+                .orElseThrow(() -> new ResourceNotFoundException("Emission factor not found"));
     }
 }
