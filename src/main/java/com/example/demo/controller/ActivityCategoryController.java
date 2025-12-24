@@ -2,7 +2,10 @@ package com.example.demo.controller;
 
 import com.example.demo.entity.ActivityCategory;
 import com.example.demo.service.ActivityCategoryService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 
 @RestController
@@ -15,13 +18,17 @@ public class ActivityCategoryController {
         this.categoryService = categoryService;
     }
 
+    // CREATE CATEGORY
     @PostMapping
-    public ActivityCategory createCategory(@RequestBody ActivityCategory category) {
-        return categoryService.createCategory(category);
+    public ResponseEntity<ActivityCategory> createCategory(
+            @RequestBody ActivityCategory category) {
+        ActivityCategory saved = categoryService.createCategory(category);
+        return new ResponseEntity<>(saved, HttpStatus.CREATED);
     }
 
+    // GET ALL CATEGORIES
     @GetMapping
-    public List<ActivityCategory> getAllCategories() {
-        return categoryService.getAllCategories();
+    public ResponseEntity<List<ActivityCategory>> getAllCategories() {
+        return ResponseEntity.ok(categoryService.getAllCategories());
     }
 }
