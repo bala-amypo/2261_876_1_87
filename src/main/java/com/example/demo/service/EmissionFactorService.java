@@ -1,10 +1,10 @@
 package com.example.demo.service;
 
 import com.example.demo.entity.EmissionFactor;
+import java.util.List;
 
 public interface EmissionFactorService {
-
-    EmissionFactor addEmissionFactor(EmissionFactor emissionFactor);
-
-    EmissionFactor getEmissionFactorByActivityType(Long activityTypeId);
+    EmissionFactor createFactor(EmissionFactor factor);
+    List<EmissionFactor> getAllFactors();
+    EmissionFactor getFactorByType(Long typeId);
 }
