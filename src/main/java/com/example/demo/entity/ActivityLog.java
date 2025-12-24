@@ -18,17 +18,9 @@ public class ActivityLog {
     private User user;
 
     private Double quantity;
-
     private LocalDate activityDate;
-
     private LocalDateTime loggedAt;
-
     private Double estimatedEmission;
-
-    @PrePersist
-    public void prePersist() {
-        this.loggedAt = LocalDateTime.now();
-    }
 
     public ActivityLog() {}
 
@@ -44,7 +36,13 @@ public class ActivityLog {
         this.estimatedEmission = estimatedEmission;
     }
 
+    @PrePersist
+    public void prePersist() {
+        this.loggedAt = LocalDateTime.now();
+    }
+
     // getters & setters
+
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
@@ -63,5 +61,7 @@ public class ActivityLog {
     public LocalDateTime getLoggedAt() { return loggedAt; }
 
     public Double getEstimatedEmission() { return estimatedEmission; }
-    public void setEstimatedEmission(Double estimatedEmission) { this.estimatedEmission = estimatedEmission; }
+    public void setEstimatedEmission(Double estimatedEmission) {
+        this.estimatedEmission = estimatedEmission;
+    }
 }
