@@ -2,45 +2,40 @@ package com.example.demo.controller;
 
 import com.example.demo.entity.EmissionFactor;
 import com.example.demo.service.EmissionFactorService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/factors")
+@RequestMapping("/factors")
 public class EmissionFactorController {
 
-    private final EmissionFactorService factorService;
+    private final EmissionFactorService emissionFactorService;
 
-    public EmissionFactorController(EmissionFactorService factorService) {
-        this.factorService = factorService;
+    public EmissionFactorController(EmissionFactorService emissionFactorService) {
+        this.emissionFactorService = emissionFactorService;
     }
 
+    // CREATE EMISSION FACTOR
     @PostMapping
-    public ResponseEntity<EmissionFactor> createFactor(@RequestBody EmissionFactor factor) {
-        if (factor.getActivityType() == null || factor.getActivityType().getId() == null) {
-            return ResponseEntity.badRequest().build();
-        }
-        EmissionFactor savedFactor = factorService.createFactor(factor.getActivityType().getId(), factor);
-        return ResponseEntity.ok(savedFactor);
+    public ResponseEntity<EmissionFactor> createFactor(
+            @RequestBody EmissionFactor factor) {
+        EmissionFactor saved = emissionFactorService.createFactor(factor);
+        return new ResponseEntity<>(saved, HttpStatus.CREATED);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<EmissionFactor> getFactorById(@PathVariable Long id) {
-        EmissionFactor factor = factorService.getFactor(id);
-        return ResponseEntity.ok(factor);
-    }
-
-    @GetMapping("/type/{activityTypeId}")
-    public ResponseEntity<EmissionFactor> getFactorByType(@PathVariable Long activityTypeId) {
-        EmissionFactor factor = factorService.getFactorByType(activityTypeId);
-        return ResponseEntity.ok(factor);
-    }
-
+    // GET ALL FACTORS
     @GetMapping
     public ResponseEntity<List<EmissionFactor>> getAllFactors() {
-        List<EmissionFactor> factors = factorService.getAllFactors();
-        return ResponseEntity.ok(factors);
+        return ResponseEntity.ok(emissionFactorService.getAllFactors());
+    }
+
+    // GET FACTOR BY ACTIVITY TYPE ID
+    @GetMapping("/type/{typeId}")
+    public ResponseEntity<EmissionFactor> getFactorByType(
+            @PathVariable Long typeId) {
+        return ResponseEntity.ok(emissionFactorService.getFactorByType(typeId));
     }
 }
