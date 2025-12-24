@@ -2,40 +2,30 @@ package com.example.demo.controller;
 
 import com.example.demo.entity.EmissionFactor;
 import com.example.demo.service.EmissionFactorService;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/factors")
+@RequestMapping("/emission-factor")
 public class EmissionFactorController {
 
-    private final EmissionFactorService emissionFactorService;
+    @Autowired
+    private EmissionFactorService emissionFactorService;
 
-    public EmissionFactorController(EmissionFactorService emissionFactorService) {
-        this.emissionFactorService = emissionFactorService;
+    @PostMapping("/create")
+    public EmissionFactor createFactor(@RequestBody EmissionFactor factor) {
+        return emissionFactorService.createFactor(factor);
     }
 
-    // CREATE EMISSION FACTOR
-    @PostMapping
-    public ResponseEntity<EmissionFactor> createFactor(
-            @RequestBody EmissionFactor factor) {
-        EmissionFactor saved = emissionFactorService.createFactor(factor);
-        return new ResponseEntity<>(saved, HttpStatus.CREATED);
+    @GetMapping("/all")
+    public List<EmissionFactor> getAllFactors() {
+        return emissionFactorService.getAllFactors();
     }
 
-    // GET ALL FACTORS
-    @GetMapping
-    public ResponseEntity<List<EmissionFactor>> getAllFactors() {
-        return ResponseEntity.ok(emissionFactorService.getAllFactors());
-    }
-
-    // GET FACTOR BY ACTIVITY TYPE ID
     @GetMapping("/type/{typeId}")
-    public ResponseEntity<EmissionFactor> getFactorByType(
-            @PathVariable Long typeId) {
-        return ResponseEntity.ok(emissionFactorService.getFactorByType(typeId));
+    public EmissionFactor getFactorByType(@PathVariable Long typeId) {
+        return emissionFactorService.getFactorByType(typeId);
     }
 }
