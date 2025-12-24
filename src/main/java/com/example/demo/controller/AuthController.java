@@ -1,30 +1,43 @@
 package com.example.demo.controller;
 
+import com.example.demo.dto.LoginRequest;
+import com.example.demo.dto.RegisterRequest;
 import com.example.demo.entity.User;
+import com.example.demo.security.JwtUtil;
 import com.example.demo.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("/api/auth")
 public class AuthController {
+    private final UserService userService;
+    private final JwtUtil jwtUtil;
+    private final AuthenticationManager authenticationManager;
 
-    @Autowired
-    private UserService userService;
-
-    @PostMapping("/register")
-    public ResponseEntity<User> registerUser(@RequestBody User user) {
-        User createdUser = userService.registerUser(user);
-        return ResponseEntity.ok(createdUser);
+    public AuthController(UserService userService, JwtUtil jwtUtil, AuthenticationManager authenticationManager) {
+        this.userService = userService;
+        this.jwtUtil = jwtUtil;
+        this.authenticationManager = authenticationManager;
     }
 
-    @GetMapping("/user")
-    public ResponseEntity<User> getUserByEmail(@RequestParam String email) {
-        User user = userService.getUserByEmail(email);
-        if (user != null)
-            return ResponseEntity.ok(user);
-        else
-            return ResponseEntity.notFound().build();
+    @PostMapping("/register")
+    public Map<String, Object> register(@RequestBody RegisterRequest request) {
+        User user = new User(null, request.getName(), request.getEmail(), request.getPassword(), "USER", null);
+        User created = userService.registerUser(user);
+        String token = jwtUtil.generateTokenForUser(created);
+        return Map.of("user", created, "token", token);
+    }
+
+    @PostMapping("/login")
+    public Map<String, String> login(@RequestBody LoginRequest request) {
+        authenticationManager.authenticate(
+            new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword())
+        );
+        String token = jwtUtil.generateToken(Map.of(), request.getEmail());
+        return Map.of("token", token);
     }
 }

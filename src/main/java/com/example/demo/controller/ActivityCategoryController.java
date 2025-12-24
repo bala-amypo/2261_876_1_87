@@ -2,24 +2,24 @@ package com.example.demo.controller;
 
 import com.example.demo.entity.ActivityCategory;
 import com.example.demo.service.ActivityCategoryService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 
 @RestController
-@RequestMapping("/activity-category")
+@RequestMapping("/api/categories")
 public class ActivityCategoryController {
+    private final ActivityCategoryService categoryService;
 
-    @Autowired
-    private ActivityCategoryService categoryService;
+    public ActivityCategoryController(ActivityCategoryService categoryService) {
+        this.categoryService = categoryService;
+    }
 
-    @PostMapping("/create")
+    @PostMapping
     public ActivityCategory createCategory(@RequestBody ActivityCategory category) {
         return categoryService.createCategory(category);
     }
 
-    @GetMapping("/all")
+    @GetMapping
     public List<ActivityCategory> getAllCategories() {
         return categoryService.getAllCategories();
     }
