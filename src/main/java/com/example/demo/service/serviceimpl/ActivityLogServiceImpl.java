@@ -1,10 +1,9 @@
 package com.example.demo.service.serviceimpl;
 
 import com.example.demo.entity.ActivityLog;
-import com.example.demo.entity.EmissionFactor;
 import com.example.demo.repository.ActivityLogRepository;
 import com.example.demo.service.ActivityLogService;
-import com.example.demo.service.EmissionFactorService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -13,34 +12,23 @@ import java.util.List;
 @Service
 public class ActivityLogServiceImpl implements ActivityLogService {
 
-    private final ActivityLogRepository activityLogRepository;
-    private final EmissionFactorService emissionFactorService;
+    @Autowired
+    private ActivityLogRepository activityLogRepository;
 
-    public ActivityLogServiceImpl(ActivityLogRepository activityLogRepository,
-                                  EmissionFactorService emissionFactorService) {
-        this.activityLogRepository = activityLogRepository;
-        this.emissionFactorService = emissionFactorService;
+    @Override
+    public ActivityLog logActivity(Long userId, Long typeId, ActivityLog log) {
+        log.setUserId(userId);
+        log.setActivityTypeId(typeId);
+        return activityLogRepository.save(log);
     }
 
     @Override
-    public ActivityLog logActivity(ActivityLog activityLog) {
-
-        if (activityLog.getActivityDate().isAfter(LocalDate.now())) {
-            throw new RuntimeException("Activity date cannot be in the future");
-        }
-
-        EmissionFactor factor = emissionFactorService
-                .getEmissionFactorByActivityType(
-                        activityLog.getActivityType().getId());
-
-        double emission = activityLog.getQuantity() * factor.getFactorValue();
-        activityLog.setEstimatedEmission(emission);
-
-        return activityLogRepository.save(activityLog);
-    }
-
-    @Override
-    public List<ActivityLog> getUserActivities(Long userId) {
+    public List<ActivityLog> getLogsByUser(Long userId) {
         return activityLogRepository.findByUserId(userId);
+    }
+
+    @Override
+    public List<ActivityLog> getLogsByUserAndDate(Long userId, LocalDate start, LocalDate end) {
+        return activityLogRepository.findByUserIdAndDateBetween(userId, start, end);
     }
 }

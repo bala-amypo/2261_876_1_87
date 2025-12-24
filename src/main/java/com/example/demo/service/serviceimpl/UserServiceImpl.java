@@ -3,28 +3,28 @@ package com.example.demo.service.serviceimpl;
 import com.example.demo.entity.User;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class UserServiceImpl implements UserService {
 
-    private final UserRepository userRepository;
-
-    public UserServiceImpl(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
+    @Autowired
+    private UserRepository userRepository;
 
     @Override
-    public User register(User user) {
-        if (userRepository.findByEmail(user.getEmail()).isPresent()) {
-            throw new RuntimeException("Email already exists");
-        }
+    public User registerUser(User user) {
+        // Optional: check if email already exists
         return userRepository.save(user);
     }
 
     @Override
-    public User login(String email, String password) {
-        return userRepository.findByEmailAndPassword(email, password)
-                .orElseThrow(() -> new RuntimeException("Invalid credentials"));
+    public User getUser(Long id) {
+        return userRepository.findById(id).orElse(null);
+    }
+
+    @Override
+    public User getUserByEmail(String email) {
+        return userRepository.findByEmail(email);
     }
 }
