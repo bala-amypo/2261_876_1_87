@@ -8,9 +8,9 @@ import java.util.List;
 
 public interface ActivityLogRepository extends JpaRepository<ActivityLog, Long> {
 
-    List<ActivityLog> findByUserId(Long userId);
+    List<ActivityLog> findByUser_Id(Long userId);
 
-    List<ActivityLog> findByUserIdAndActivityDateBetween(
+    List<ActivityLog> findByUser_IdAndActivityDateBetween(
             Long userId,
             LocalDate startDate,
             LocalDate endDate
