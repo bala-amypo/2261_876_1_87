@@ -1,15 +1,34 @@
 package com.example.demo.entity;
 
+import jakarta.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+@Entity
+@Table(name = "activity_logs")
 public class ActivityLog {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "activity_type_id")
     private ActivityType activityType;
+    
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
     private User user;
+    
+    @Column(nullable = false)
     private Double quantity;
+    
+    @Column(name = "activity_date", nullable = false)
     private LocalDate activityDate;
+    
+    @Column(name = "logged_at")
     private LocalDateTime loggedAt;
+    
+    @Column(name = "estimated_emission")
     private Double estimatedEmission;
 
     public ActivityLog() {}
@@ -25,6 +44,7 @@ public class ActivityLog {
         this.estimatedEmission = estimatedEmission;
     }
 
+    @PrePersist
     public void prePersist() {
         this.loggedAt = LocalDateTime.now();
     }

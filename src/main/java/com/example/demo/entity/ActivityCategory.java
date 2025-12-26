@@ -1,11 +1,21 @@
 package com.example.demo.entity;
 
+import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
+@Entity
+@Table(name = "activity_categories")
 public class ActivityCategory {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    
+    @Column(name = "category_name", unique = true, nullable = false)
     private String categoryName;
+    
     private String description;
+    
+    @Column(name = "created_at")
     private LocalDateTime createdAt;
 
     public ActivityCategory() {}
@@ -17,6 +27,7 @@ public class ActivityCategory {
         this.createdAt = createdAt;
     }
 
+    @PrePersist
     public void prePersist() {
         this.createdAt = LocalDateTime.now();
     }
