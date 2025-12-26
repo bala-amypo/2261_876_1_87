@@ -5,7 +5,9 @@ import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.repository.ActivityTypeRepository;
 import com.example.demo.repository.EmissionFactorRepository;
 import com.example.demo.service.EmissionFactorService;
+import org.springframework.stereotype.Service;
 
+@Service
 public class EmissionFactorServiceImpl implements EmissionFactorService {
     private final ActivityTypeRepository typeRepository;
     private final EmissionFactorRepository factorRepository;
