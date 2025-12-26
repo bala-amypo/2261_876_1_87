@@ -11,9 +11,11 @@ import com.example.demo.repository.ActivityTypeRepository;
 import com.example.demo.repository.EmissionFactorRepository;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.service.ActivityLogService;
+import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.List;
 
+@Service
 public class ActivityLogServiceImpl implements ActivityLogService {
     private final UserRepository userRepository;
     private final ActivityTypeRepository typeRepository;
