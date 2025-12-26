@@ -24,6 +24,11 @@ public class ActivityLogController {
         return logService.logActivity(userId, typeId, log);
     }
 
+    @GetMapping("/{id}")
+    public ActivityLog getLog(@PathVariable Long id) {
+        return logService.getLog(id);
+    }
+
     @GetMapping("/user/{userId}")
     public List<ActivityLog> getLogsByUser(@PathVariable Long userId) {
         return logService.getLogsByUser(userId);

@@ -8,6 +8,7 @@ import com.example.demo.security.JwtUtil;
 import com.example.demo.service.UserService;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -42,5 +43,20 @@ public class AuthController {
         
         String token = jwtUtil.generateTokenForUser(user);
         return Map.of("token", token);
+    }
+
+    @GetMapping("/users")
+    public List<User> getAllUsers() {
+        return userService.getAllUsers();
+    }
+
+    @GetMapping("/users/{id}")
+    public User getUser(@PathVariable Long id) {
+        return userService.getUser(id);
+    }
+
+    @GetMapping("/users/email/{email}")
+    public User getUserByEmail(@PathVariable String email) {
+        return userService.getByEmail(email);
     }
 }
