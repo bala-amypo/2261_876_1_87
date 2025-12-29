@@ -1,12 +1,14 @@
 package com.example.demo.service.impl;
 
+import java.util.List;
+
+import org.springframework.stereotype.Service;
+
 import com.example.demo.entity.ActivityCategory;
 import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.exception.ValidationException;
 import com.example.demo.repository.ActivityCategoryRepository;
 import com.example.demo.service.ActivityCategoryService;
-import org.springframework.stereotype.Service;
-import java.util.List;
 
 @Service
 public class ActivityCategoryServiceImpl implements ActivityCategoryService {
@@ -16,7 +18,7 @@ public class ActivityCategoryServiceImpl implements ActivityCategoryService {
         this.categoryRepository = categoryRepository;
     }
 
-    @Override
+    @Override   
     public ActivityCategory createCategory(ActivityCategory category) {
         if (categoryRepository.existsByCategoryName(category.getCategoryName())) {
             throw new ValidationException("Category name must be unique");
