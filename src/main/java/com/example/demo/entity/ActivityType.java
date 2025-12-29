@@ -23,7 +23,7 @@ public class ActivityType {
     @Column(name = "type_name", nullable = false)
     private String typeName;
     
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "category_id")
     private ActivityCategory category;
     

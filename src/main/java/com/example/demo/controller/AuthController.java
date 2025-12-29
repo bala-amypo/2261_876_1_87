@@ -26,14 +26,15 @@ public class AuthController {
 
     @PostMapping("/register")
     public Map<String, Object> register(@RequestBody RegisterRequest request) {
-        User user = new User(null, request.getName(), request.getEmail(), request.getPassword(), "USER", null);
+        String role = (request.getRole() != null && !request.getRole().isEmpty()) ? request.getRole() : "USER";
+        User user = new User(null, request.getName(), request.getEmail(), request.getPassword(), role, null);
         User created = userService.registerUser(user);
         String token = jwtUtil.generateTokenForUser(created);
         return Map.of("user", created, "token", token);
     }
 
     @PostMapping("/login")
-    public Map<String, String> login(@RequestBody LoginRequest request) {
+    public Map<String, Object> login(@RequestBody LoginRequest request) {
         User user = userRepository.findByEmail(request.getEmail())
             .orElseThrow(() -> new RuntimeException("User not found"));
         
@@ -42,7 +43,12 @@ public class AuthController {
         }
         
         String token = jwtUtil.generateTokenForUser(user);
-        return Map.of("token", token);
+        return Map.of(
+            "token", token,
+            "role", user.getRole(),
+            "userId", user.getId(),
+            "email", user.getEmail()
+        );
     }
 
     @GetMapping("/users")

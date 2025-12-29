@@ -19,18 +19,13 @@ public class EmissionFactorController {
         return factorService.createFactor(typeId, factor);
     }
 
-    @GetMapping
-    public List<EmissionFactor> getAllFactors() {
-        return factorService.getAllFactors();
-    }
-
-    @GetMapping("/{id}")
-    public EmissionFactor getFactor(@PathVariable Long id) {
-        return factorService.getFactor(id);
-    }
-
     @GetMapping("/type/{typeId}")
     public EmissionFactor getFactorByType(@PathVariable Long typeId) {
         return factorService.getFactorByType(typeId);
+    }
+
+    @GetMapping
+    public List<EmissionFactor> getAllFactors() {
+        return factorService.getAllFactors();
     }
 }
